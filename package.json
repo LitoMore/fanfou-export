@@ -1,5 +1,6 @@
 {
   "name": "fanfou-export",
+  "homepage": "https://litomore.github.io/fanfou-export",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
