@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/fanfou-export/static/css/main.00966315.chunk.css",
+    "main.js": "/fanfou-export/static/js/main.b417e77a.chunk.js",
+    "main.js.map": "/fanfou-export/static/js/main.b417e77a.chunk.js.map",
+    "runtime-main.js": "/fanfou-export/static/js/runtime-main.b298e385.js",
+    "runtime-main.js.map": "/fanfou-export/static/js/runtime-main.b298e385.js.map",
+    "static/css/2.bc82e399.chunk.css": "/fanfou-export/static/css/2.bc82e399.chunk.css",
+    "static/js/2.cc51b0e7.chunk.js": "/fanfou-export/static/js/2.cc51b0e7.chunk.js",
+    "static/js/2.cc51b0e7.chunk.js.map": "/fanfou-export/static/js/2.cc51b0e7.chunk.js.map",
+    "index.html": "/fanfou-export/index.html",
+    "precache-manifest.9ec9feb539bbb7a3de2e19228c2d65ef.js": "/fanfou-export/precache-manifest.9ec9feb539bbb7a3de2e19228c2d65ef.js",
+    "service-worker.js": "/fanfou-export/service-worker.js",
+    "static/css/2.bc82e399.chunk.css.map": "/fanfou-export/static/css/2.bc82e399.chunk.css.map",
+    "static/css/main.00966315.chunk.css.map": "/fanfou-export/static/css/main.00966315.chunk.css.map",
+    "static/js/2.cc51b0e7.chunk.js.LICENSE.txt": "/fanfou-export/static/js/2.cc51b0e7.chunk.js.LICENSE.txt",
+    "static/media/app.css": "/fanfou-export/static/media/Zpix.783bb457.ttf"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b298e385.js",
+    "static/css/2.bc82e399.chunk.css",
+    "static/js/2.cc51b0e7.chunk.js",
+    "static/css/main.00966315.chunk.css",
+    "static/js/main.b417e77a.chunk.js"
+  ]
+}
