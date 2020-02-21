@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Zpix';
+  src: local('Zpix'), url(./fonts/Zpix.ttf) format('truetype');
+}
+
+body {
+  font-family: Zpix;
+}
+
+img {
+  image-rendering: pixelated;
+}
