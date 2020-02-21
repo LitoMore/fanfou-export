@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/fanfou-export/static/css/main.00966315.chunk.css",
-    "main.js": "/fanfou-export/static/js/main.b417e77a.chunk.js",
-    "main.js.map": "/fanfou-export/static/js/main.b417e77a.chunk.js.map",
+    "main.js": "/fanfou-export/static/js/main.e8fd2ba3.chunk.js",
+    "main.js.map": "/fanfou-export/static/js/main.e8fd2ba3.chunk.js.map",
     "runtime-main.js": "/fanfou-export/static/js/runtime-main.b298e385.js",
     "runtime-main.js.map": "/fanfou-export/static/js/runtime-main.b298e385.js.map",
     "static/css/2.bc82e399.chunk.css": "/fanfou-export/static/css/2.bc82e399.chunk.css",
     "static/js/2.cc51b0e7.chunk.js": "/fanfou-export/static/js/2.cc51b0e7.chunk.js",
     "static/js/2.cc51b0e7.chunk.js.map": "/fanfou-export/static/js/2.cc51b0e7.chunk.js.map",
     "index.html": "/fanfou-export/index.html",
-    "precache-manifest.9ec9feb539bbb7a3de2e19228c2d65ef.js": "/fanfou-export/precache-manifest.9ec9feb539bbb7a3de2e19228c2d65ef.js",
+    "precache-manifest.76a12105029b72a5b5ade3f479ffc1a3.js": "/fanfou-export/precache-manifest.76a12105029b72a5b5ade3f479ffc1a3.js",
     "service-worker.js": "/fanfou-export/service-worker.js",
     "static/css/2.bc82e399.chunk.css.map": "/fanfou-export/static/css/2.bc82e399.chunk.css.map",
     "static/css/main.00966315.chunk.css.map": "/fanfou-export/static/css/main.00966315.chunk.css.map",
@@ -21,6 +21,6 @@
     "static/css/2.bc82e399.chunk.css",
     "static/js/2.cc51b0e7.chunk.js",
     "static/css/main.00966315.chunk.css",
-    "static/js/main.b417e77a.chunk.js"
+    "static/js/main.e8fd2ba3.chunk.js"
   ]
 }
