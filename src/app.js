@@ -190,7 +190,7 @@ class App extends React.Component {
 										</label>
 									</p>
 								) : null} */}
-									<p><button type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.downloadAsNofan}>导出</button></p>
+									<p><button disabled={!done} type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.downloadAsNofan}>导出</button></p>
 								</>
 							) : (
 								<p className="nes-pointer" onClick={this.startAnalyze}>{'> 点击这里开始备份 <'}</p>
