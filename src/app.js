@@ -14,7 +14,8 @@ const fullList = [];
 const exportTypes = {
 	TXT: 'TXT',
 	CSV: 'CSV',
-	TSV: 'TSV'
+	TSV: 'TSV',
+	JSON: 'JSON'
 };
 
 class App extends React.Component {
@@ -65,12 +66,14 @@ class App extends React.Component {
 		window.location.replace(`https://fanfou.com/oauth/authorize?oauth_token=${res.oauthToken}&oauth_callback=${window.location.href}`);
 	}
 
-	fetchStatuses = pages => {
-		const {done, erroredPages} = this.state;
+	fetchStatuses = () => {
+		const {done, erroredPages, pageCount} = this.state;
 
 		if (done) {
 			return;
 		}
+
+		let pages = Array.from({length: pageCount}, (v, i) => i + 1);
 
 		if (erroredPages.length > 0) {
 			console.log('Errored pages:', erroredPages);
@@ -105,7 +108,7 @@ class App extends React.Component {
 			fullList.sort((a, b) => b.rawid - a.rawid);
 
 			this.setState({done: erroredPages.length === 0}, () => {
-				this.fetchStatuses(erroredPages);
+				this.fetchStatuses();
 			});
 		});
 	}
@@ -121,11 +124,7 @@ class App extends React.Component {
 				'开始获取消息..'
 			]),
 			pageCount
-		}));
-
-		const pages = Array.from({length: pageCount}, (v, i) => i + 1);
-
-		this.fetchStatuses(pages);
+		}), this.fetchStatuses);
 	}
 
 	exportTypes = () => {
@@ -236,9 +235,19 @@ class App extends React.Component {
 		down(output, 'backup.' + type.toLowerCase());
 	}
 
+	downloadJson = () => {
+		const parsedData = fullList.map(status => {
+			delete status.txt;
+			delete status.user;
+			return status;
+		});
+		const output = window.JSON.stringify(parsedData, null, 2);
+		down(output, 'backup.json');
+	}
+
 	doExport = () => {
 		const {exportType} = this.state;
-		const {TXT, CSV, TSV} = exportTypes;
+		const {TXT, CSV, TSV, JSON} = exportTypes;
 
 		switch (exportType) {
 			case TXT:
@@ -249,6 +258,9 @@ class App extends React.Component {
 				break;
 			case TSV:
 				this.downloadAsCsv(TSV);
+				break;
+			case JSON:
+				this.downloadJson();
 				break;
 			default:
 				break;
@@ -273,7 +285,7 @@ class App extends React.Component {
 								<>
 									{message.map((m, i) => <p key={String(i)}>{m}</p>)}
 									<p><progress className="nes-progress is-pattern" value={currentPage} max={pageCount}/></p>
-									<p>实际已获取 <ReactCountup start={prevStatusCount} end={statusCount} duration={done ? 1 : 5}/> 条消息。</p>
+									<p>实际已获取 <ReactCountup start={prevStatusCount} end={statusCount} duration={done ? 1 : 3}/> 条消息。</p>
 									{done && erroredPages.length === 0 ? <p>获取完毕。</p> : null}
 									{done ? this.exportTypes() : null}
 									<p><button disabled={!done} type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.doExport}>导出</button></p>
