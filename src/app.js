@@ -19,7 +19,8 @@ class App extends React.Component {
 		pageCount: 0,
 		prevStatusCount: 0,
 		statusCount: 0,
-		done: false
+		done: false,
+		erroredPages: []
 	}
 
 	async componentDidMount() {
@@ -56,6 +57,51 @@ class App extends React.Component {
 		window.location.replace(`https://fanfou.com/oauth/authorize?oauth_token=${res.oauthToken}&oauth_callback=${window.location.href}`);
 	}
 
+	fetchStatuses = pages => {
+		const {done, erroredPages} = this.state;
+
+		if (done) {
+			return;
+		}
+
+		if (erroredPages.length > 0) {
+			console.log('Errored pages:' erroredPages);
+			pages = erroredPages;
+		}
+
+		async.eachLimit(pages, 6, (page, cb) => {
+			ff.get('/statuses/user_timeline', {page, count: 60, format: 'html'})
+				.then(list => {
+					const prevCount = fullList.length;
+					list.forEach(status => {
+						fullList.push(status);
+					});
+					this.setState(state => ({
+						currentPage: state.currentPage + 1,
+						prevStatusCount: prevCount,
+						statusCount: fullList.length,
+						erroredPages: state.erroredPages.filter(p => p !== page)
+					}), cb);
+				})
+				.catch(error => {
+					console.error(error);
+					this.setState(state => ({
+						erroredPages: state.erroredPages.concat(page)
+					}), cb);
+				});
+		}, error => {
+			if (error) {
+				console.error(error);
+			}
+
+			fullList.sort((a, b) => b.rawid - a.rawid);
+
+			this.setState({done: erroredPages.length === 0}, () => {
+				this.fetchStatuses(erroredPages);
+			});
+		});
+	}
+
 	startAnalyze = () => {
 		const {user} = this.state;
 		const {statuses_count: statusesCount} = user;
@@ -71,32 +117,7 @@ class App extends React.Component {
 
 		const pages = Array.from({length: pageCount}, (v, i) => i + 1);
 
-		async.eachLimit(pages, 6, (page, cb) => {
-			ff.get('/statuses/user_timeline', {page, count: 60, format: 'html'})
-				.then(list => {
-					const prevCount = fullList.length;
-					list.forEach(status => {
-						fullList.push(status);
-					});
-					this.setState(state => ({
-						currentPage: state.currentPage + 1,
-						prevStatusCount: prevCount,
-						statusCount: fullList.length
-					}));
-					cb();
-				})
-				.catch(error => {
-					console.error(error);
-					cb();
-				});
-		}, error => {
-			if (error) {
-				console.error(error);
-			}
-
-			fullList.sort((a, b) => b.rawid - a.rawid);
-			this.setState({done: true});
-		});
+		this.fetchStatuses(pages);
 	}
 
 	downloadAsNofan = () => {
@@ -142,7 +163,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		const {user, loged, message, currentPage, pageCount, prevStatusCount, statusCount, done} = this.state;
+		const {user, loged, message, currentPage, pageCount, prevStatusCount, statusCount, done, erroredPages} = this.state;
 
 		return (
 			<div>
@@ -160,53 +181,13 @@ class App extends React.Component {
 									{message.map((m, i) => <p key={String(i)}>{m}</p>)}
 									<p><progress className="nes-progress is-pattern" value={currentPage} max={pageCount}/></p>
 									<p>实际已获取 <ReactCountup start={prevStatusCount} end={statusCount} duration={done ? 1 : 5}/> 条消息。</p>
-									{done ? <p>获取完毕。</p> : null}
-									{/* {done ? <p>选择需要导出格式类型：</p> : null} */}
-									{/* {done ? (
-									<p>
-										<label>
-											<input
-												checked={exportType === 'nofan'}
-												type="radio"
-												className="nes-radio"
-												name="exportType"
-												onChange={() => {
-													this.setState({exportType: 'nofan'});
-												}}
-											/>
-											<span>Nofan</span>
-										</label>
-										<label>
-											<input
-												checked={exportType === 'tsv'}
-												type="radio"
-												className="nes-radio"
-												name="exportType"
-												onChange={() => {
-													this.setState({exportType: 'tsv'});
-												}}
-											/>
-											<span>TSV</span>
-										</label>
-									</p>
-								) : null} */}
+									{done && erroredPages.length === 0 ? <p>获取完毕。</p> : null}
+									{done && erroredPages.length > 0 ? <p>有 {erroredPages.length} 页消息获取失败。</p> : null}
 									<p><button disabled={!done} type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.downloadAsNofan}>导出</button></p>
 								</>
 							) : (
 								<p className="nes-pointer" onClick={this.startAnalyze}>{'> 点击这里开始备份 <'}</p>
 							)}
-
-							{/* <a
-								className="nes-btn"
-								style={{
-									position: 'absolute',
-									left: -4,
-									bottom: -4
-								}}
-								href="https://github.com/LitoMore/fanfou-export/issues"
-							>
-								意见反馈
-							</a> */}
 
 							<button
 								type="button"
@@ -236,18 +217,6 @@ class App extends React.Component {
 							</p>
 						)
 					)}
-
-					{/* {opened ? (
-						<Popout
-							url={`https://fanfou.com/oauth/authorize?oauth_token=${this.state.requestToken}&oauth_callback=${window.location.href}`}
-							title="饭否登录"
-							onClosing={() => {
-								this.setState({opened: false, requestToken: null}, () => {
-									this.reloadWindow();
-								});
-							}}
-						/>
-					) : null} */}
 				</div>
 				<p style={{textAlign: 'center'}}>
 					<span style={{fontWeight: 700}}>{'<'}</span>
