@@ -3,12 +3,19 @@ import down from 'js-file-download';
 import moment from 'moment';
 import ReactCountup from 'react-countup';
 import queryString from 'query-string';
+import Papa from 'papaparse';
 import async from 'async';
 import {ff} from './ff';
 import 'nes.css/css/nes.css';
 import './app.css';
 
 const fullList = [];
+
+const exportTypes = {
+	TXT: 'TXT',
+	CSV: 'CSV',
+	TSV: 'TSV'
+};
 
 class App extends React.Component {
 	state = {
@@ -20,7 +27,8 @@ class App extends React.Component {
 		prevStatusCount: 0,
 		statusCount: 0,
 		done: false,
-		erroredPages: []
+		erroredPages: [],
+		exportType: 'TXT'
 	}
 
 	async componentDidMount() {
@@ -120,6 +128,36 @@ class App extends React.Component {
 		this.fetchStatuses(pages);
 	}
 
+	exportTypes = () => {
+		const {exportType} = this.state;
+
+		return (
+			<>
+				<p>选择导出格式：</p>
+				<p>
+					{Object.values(exportTypes).map(type => (
+						<label key={type} style={{marginRight: 5}}>
+							<input
+								checked={exportType === type}
+								value={type}
+								type="radio"
+								className="nes-radio"
+								name="export-type"
+								onChange={this.onChangeExportType}
+							/>
+							<span>{type}</span>
+						</label>
+					))}
+				</p>
+			</>
+		);
+	}
+
+	onChangeExportType = e => {
+		const {value: exportType} = e.currentTarget;
+		this.setState({exportType});
+	}
+
 	downloadAsNofan = () => {
 		const parsedData = fullList.map(status => {
 			const name = `[${status.user.screen_name}]`;
@@ -151,15 +189,70 @@ class App extends React.Component {
 				}
 			}
 
-			const time = moment(new Date(status.created_at))
-				.local()
-				.format('YYYY-MM-DD HH:mm:ss');
-
+			const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
 			const line = `${name} ${text} ${time}`;
+
 			return line;
 		});
 		const txt = parsedData.join('\n');
 		down(txt, 'backup.txt');
+	}
+
+	downloadAsCsv = (type = exportTypes.CSV) => {
+		const parsedData = fullList.map(status => {
+			const name = status.user.screen_name;
+			const photo = status.photo ? status.photo.originurl : '';
+			const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
+			let text = '';
+
+			status.txt.forEach(item => {
+				switch (item.type) {
+					case 'at':
+						text += `${item.text}:${item.id}`;
+						break;
+					case 'link':
+						text += item.text;
+						break;
+					case 'tag':
+						text += item._text;
+						break;
+					default:
+						text += item._text;
+						break;
+				}
+			});
+
+			const record = {ID: name, 消息内容: text, 图片: photo, 时间: time};
+
+			return record;
+		});
+
+		let delimiter = ',';
+		if (type === exportTypes.TSV) {
+			delimiter = '\t';
+		}
+
+		const output = Papa.unparse(parsedData, {delimiter, header: true});
+		down(output, 'backup.' + type.toLowerCase());
+	}
+
+	doExport = () => {
+		const {exportType} = this.state;
+		const {TXT, CSV, TSV} = exportTypes;
+
+		switch (exportType) {
+			case TXT:
+				this.downloadAsNofan();
+				break;
+			case CSV:
+				this.downloadAsCsv();
+				break;
+			case TSV:
+				this.downloadAsCsv(TSV);
+				break;
+			default:
+				break;
+		}
 	}
 
 	render() {
@@ -182,8 +275,8 @@ class App extends React.Component {
 									<p><progress className="nes-progress is-pattern" value={currentPage} max={pageCount}/></p>
 									<p>实际已获取 <ReactCountup start={prevStatusCount} end={statusCount} duration={done ? 1 : 5}/> 条消息。</p>
 									{done && erroredPages.length === 0 ? <p>获取完毕。</p> : null}
-									{done && erroredPages.length > 0 ? <p>有 {erroredPages.length} 页消息获取失败。</p> : null}
-									<p><button disabled={!done} type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.downloadAsNofan}>导出</button></p>
+									{done ? this.exportTypes() : null}
+									<p><button disabled={!done} type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.doExport}>导出</button></p>
 								</>
 							) : (
 								<p className="nes-pointer" onClick={this.startAnalyze}>{'> 点击这里开始备份 <'}</p>
