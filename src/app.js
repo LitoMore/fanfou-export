@@ -86,16 +86,16 @@ class App extends React.Component {
 					cb();
 				})
 				.catch(error => {
-					console.log(error.message);
+					console.error(error);
 					cb();
 				});
 		}, error => {
 			if (error) {
-				// Console.log(error);
-			} else {
-				fullList.sort((a, b) => b.rawid - a.rawid);
-				this.setState({done: true});
+				console.error(error);
 			}
+
+			fullList.sort((a, b) => b.rawid - a.rawid);
+			this.setState({done: true});
 		});
 	}
 
