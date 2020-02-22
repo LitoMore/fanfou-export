@@ -65,7 +65,7 @@ class App extends React.Component {
 		}
 
 		if (erroredPages.length > 0) {
-			console.log('Errored pages:' erroredPages);
+			console.log('Errored pages:', erroredPages);
 			pages = erroredPages;
 		}
 
