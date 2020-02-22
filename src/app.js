@@ -146,7 +146,7 @@ class App extends React.Component {
 
 		return (
 			<div>
-				<div className="nes-container with-title is-centered" style={{width: 800, margin: '40px auto 20px auto'}}>
+				<div className="nes-container with-title is-centered" style={{width: '70vw', margin: '40px auto 20px auto'}}>
 					<p className="title" style={{fontSize: 24, margin: '-3rem auto 1rem'}}>饭否消息备份工具</p>
 
 					{user ? (
