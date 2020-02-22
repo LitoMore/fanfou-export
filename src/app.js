@@ -1,8 +1,8 @@
 import React from 'react';
-import down from 'js-file-download';
 import moment from 'moment';
 import ReactCountup from 'react-countup';
 import queryString from 'query-string';
+import FileSaver from 'file-saver';
 import Papa from 'papaparse';
 import async from 'async';
 import {ff} from './ff';
@@ -113,6 +113,11 @@ class App extends React.Component {
 		});
 	}
 
+	saveFile = (text, filename) => {
+		const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+		FileSaver.saveAs(blob, filename);
+	}
+
 	startAnalyze = () => {
 		const {user} = this.state;
 		const {statuses_count: statusesCount} = user;
@@ -194,7 +199,7 @@ class App extends React.Component {
 			return line;
 		});
 		const txt = parsedData.join('\n');
-		down(txt, 'backup.txt');
+		this.saveFile(txt, 'backup.txt');
 	}
 
 	downloadAsCsv = (type = exportTypes.CSV) => {
@@ -232,7 +237,7 @@ class App extends React.Component {
 		}
 
 		const output = Papa.unparse(parsedData, {delimiter, header: true});
-		down(output, 'backup.' + type.toLowerCase());
+		this.saveFile(output, 'backup.' + type.toLowerCase());
 	}
 
 	downloadJson = () => {
@@ -242,7 +247,7 @@ class App extends React.Component {
 			return status;
 		});
 		const output = window.JSON.stringify(parsedData, null, 2);
-		down(output, 'backup.json');
+		this.saveFile(output, 'backup.json');
 	}
 
 	doExport = () => {
