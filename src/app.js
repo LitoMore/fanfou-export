@@ -15,7 +15,8 @@ const exportTypes = {
 	TXT: 'TXT',
 	CSV: 'CSV',
 	TSV: 'TSV',
-	JSON: 'JSON'
+	JSON: 'JSON',
+	Markdown: 'Markdown'
 };
 
 class App extends React.Component {
@@ -250,9 +251,40 @@ class App extends React.Component {
 		this.saveFile(output, 'backup.json');
 	}
 
+	downloadMarkdown = () => {
+		const parsedData = fullList.map(status => {
+			const photo = status.photo ? status.photo.originurl : '';
+			const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
+			let text = '';
+
+			status.txt.forEach(item => {
+				switch (item.type) {
+					case 'at':
+						text += `<a href="https://fanfou.com/${item.id}">${item.text}</a>`;
+						break;
+					case 'link':
+						text += `<a href="${item.text}">${item.text}</a>`;
+						break;
+					case 'tag':
+						text += `<a href="https://fanfou.com/q/${item.query}">${item._text.replace(/\n/g, ' ')}</a>`;
+						break;
+					default:
+						text += item._text.replace(/\n/g, ' ');
+						break;
+				}
+			});
+			const block = `| <div>${text}</div>${photo ? `<div align="right"><a href="${photo}"><img width="100px" src="${photo}"/></a></div>` : ''} <div align="right">${time} 通过 ${status.source_url ? `<a href="${status.source_url}">${status.source_name}</a>` : status.source_name}</div> |`;
+
+			return block;
+		});
+
+		const output = '| 饭否消息备份 |\n| :-- |\n' + parsedData.join('\n');
+		this.saveFile(output, 'backup.md');
+	}
+
 	doExport = () => {
 		const {exportType} = this.state;
-		const {TXT, CSV, TSV, JSON} = exportTypes;
+		const {TXT, CSV, TSV, JSON, Markdown} = exportTypes;
 
 		switch (exportType) {
 			case TXT:
@@ -266,6 +298,9 @@ class App extends React.Component {
 				break;
 			case JSON:
 				this.downloadJson();
+				break;
+			case Markdown:
+				this.downloadMarkdown();
 				break;
 			default:
 				break;
