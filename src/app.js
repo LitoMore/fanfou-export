@@ -1,16 +1,19 @@
 import React from 'react';
-import moment from 'moment';
 import ReactCountup from 'react-countup';
 import queryString from 'query-string';
-import FileSaver from 'file-saver';
-import Papa from 'papaparse';
 import async from 'async';
 import {ff} from './ff';
+import {toTxt, toCsv, toTsv, toJson, toMarkdown} from './utils/parser';
 import 'nes.css/css/nes.css';
 import './app.css';
 
 const fullList = [];
 let erroredPages = [];
+
+const dataTypes = {
+	USER_TIMELINE: '消息',
+	FAVORITES: '收藏'
+};
 
 const exportTypes = {
 	TXT: 'TXT',
@@ -30,7 +33,8 @@ class App extends React.Component {
 		prevStatusCount: 0,
 		statusCount: 0,
 		done: false,
-		exportType: 'TXT'
+		exportType: 'TXT',
+		dataType: '消息'
 	}
 
 	async componentDidMount() {
@@ -72,21 +76,34 @@ class App extends React.Component {
 	}
 
 	fetchStatuses = () => {
-		const {done, pageCount} = this.state;
+		const {done, pageCount, dataType} = this.state;
+		const {USER_TIMELINE, FAVORITES} = dataTypes;
 
 		if (done) {
 			return;
 		}
 
 		let pages = Array.from({length: pageCount}, (v, i) => i + 1);
+		let timelineUri = '';
 
 		if (erroredPages.length > 0) {
 			pages = erroredPages;
 			console.log('Retry pages', erroredPages);
 		}
 
+		switch (dataType) {
+			case USER_TIMELINE:
+				timelineUri = '/statuses/user_timeline';
+				break;
+			case FAVORITES:
+				timelineUri = '/favorites';
+				break;
+			default:
+				return;
+		}
+
 		async.eachLimit(pages, 6, (page, cb) => {
-			ff.get('/statuses/user_timeline', {page, count: 60, format: 'html'})
+			ff.get(timelineUri, {page, count: 60, format: 'html'})
 				.then(list => {
 					const prevCount = fullList.length;
 					list.forEach(status => {
@@ -117,20 +134,28 @@ class App extends React.Component {
 		});
 	}
 
-	saveFile = (text, filename) => {
-		const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
-		FileSaver.saveAs(blob, filename);
-	}
-
 	startAnalyze = () => {
-		const {user} = this.state;
-		const {statuses_count: statusesCount} = user;
+		const {user, dataType} = this.state;
+		const {USER_TIMELINE, FAVORITES} = dataTypes;
+		let statusesCount = 0;
+
+		switch (dataType) {
+			case USER_TIMELINE:
+				statusesCount = user.statuses_count;
+				break;
+			case FAVORITES:
+				statusesCount = user.favourites_count;
+				break;
+			default:
+				return;
+		}
+
 		const pageCount = Math.ceil(statusesCount / 60);
 
 		this.setState(state => ({
 			message: state.message.concat([
-				`你有 ${pageCount} 页预计 ${statusesCount} 条消息待导出，`,
-				'开始获取消息..'
+				`你有 ${pageCount} 页预计 ${statusesCount} 条${dataType}待导出，`,
+				`开始获取${dataType}..`
 			]),
 			pageCount
 		}), this.fetchStatuses);
@@ -166,123 +191,11 @@ class App extends React.Component {
 		this.setState({exportType});
 	}
 
-	downloadAsNofan = () => {
-		const parsedData = fullList.map(status => {
-			const name = `[${status.user.screen_name}]`;
-			let text = '';
-
-			status.txt.forEach(item => {
-				switch (item.type) {
-					case 'at':
-						text += `${item.text}:${item.id}`;
-						break;
-					case 'link':
-						text += item.text;
-						break;
-					case 'tag':
-						text += item._text;
-						break;
-					default:
-						text += item._text;
-						break;
-				}
-			});
-
-			if (status.photo) {
-				const photoTag = `图:${status.photo.originurl}`;
-				if (text.length > 0) {
-					text += ` ${photoTag}`;
-				} else {
-					text += photoTag;
-				}
-			}
-
-			const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
-			const line = `${name} ${text} ${time}`;
-
-			return line;
-		});
-		const txt = parsedData.join('\n');
-		this.saveFile(txt, 'backup.txt');
-	}
-
-	downloadAsCsv = (type = exportTypes.CSV) => {
-		const parsedData = fullList.map(status => {
-			const name = status.user.screen_name;
-			const photo = status.photo ? status.photo.originurl : '';
-			const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
-			let text = '';
-
-			status.txt.forEach(item => {
-				switch (item.type) {
-					case 'at':
-						text += `${item.text}:${item.id}`;
-						break;
-					case 'link':
-						text += item.text;
-						break;
-					case 'tag':
-						text += item._text;
-						break;
-					default:
-						text += item._text;
-						break;
-				}
-			});
-
-			const record = {ID: name, 消息内容: text, 图片: photo, 时间: time};
-
-			return record;
-		});
-
-		let delimiter = ',';
-		if (type === exportTypes.TSV) {
-			delimiter = '\t';
+	onChangeDataType = e => {
+		if (this.state.message.length === 0) {
+			const {value: dataType} = e.currentTarget;
+			this.setState({dataType});
 		}
-
-		const output = Papa.unparse(parsedData, {delimiter, header: true});
-		this.saveFile(output, 'backup.' + type.toLowerCase());
-	}
-
-	downloadJson = () => {
-		const parsedData = fullList.map(status => {
-			delete status.txt;
-			delete status.user;
-			return status;
-		});
-		const output = window.JSON.stringify(parsedData, null, 2);
-		this.saveFile(output, 'backup.json');
-	}
-
-	downloadMarkdown = () => {
-		const parsedData = fullList.map(status => {
-			const photo = status.photo ? status.photo.originurl : '';
-			const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
-			let text = '';
-
-			status.txt.forEach(item => {
-				switch (item.type) {
-					case 'at':
-						text += `<a href="https://fanfou.com/${item.id}">${item.text}</a>`;
-						break;
-					case 'link':
-						text += `<a href="${item.text}">${item.text}</a>`;
-						break;
-					case 'tag':
-						text += `<a href="https://fanfou.com/q/${item.query}">${item._text.replace(/\n/g, ' ')}</a>`;
-						break;
-					default:
-						text += item._text.replace(/\n/g, ' ');
-						break;
-				}
-			});
-			const block = `| <div>${text}</div>${photo ? `<div align="right"><a href="${photo}"><img width="100px" src="${photo}"/></a></div>` : ''} <div align="right">${time} 通过 ${status.source_url ? `<a href="${status.source_url}">${status.source_name}</a>` : status.source_name}</div> |`;
-
-			return block;
-		});
-
-		const output = '| 饭否消息备份 |\n| :-- |\n' + parsedData.join('\n');
-		this.saveFile(output, 'backup.md');
 	}
 
 	doExport = () => {
@@ -291,19 +204,19 @@ class App extends React.Component {
 
 		switch (exportType) {
 			case TXT:
-				this.downloadAsNofan();
+				toTxt(fullList);
 				break;
 			case CSV:
-				this.downloadAsCsv();
+				toCsv(fullList);
 				break;
 			case TSV:
-				this.downloadAsCsv(TSV);
+				toTsv(fullList);
 				break;
 			case JSON:
-				this.downloadJson();
+				toJson(fullList);
 				break;
 			case Markdown:
-				this.downloadMarkdown();
+				toMarkdown(fullList);
 				break;
 			default:
 				break;
@@ -311,7 +224,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		const {user, loged, message, currentPage, pageCount, prevStatusCount, statusCount, done} = this.state;
+		const {user, loged, dataType, message, currentPage, pageCount, prevStatusCount, statusCount, done} = this.state;
 
 		return (
 			<div>
@@ -324,14 +237,49 @@ class App extends React.Component {
 								你好，<img className="nes-avatar is-small" alt="avatar" src={user.profile_image_url} style={{imageRendering: 'pixelated'}}/> {user.name}。
 							</p>
 
+							<p>
+								选择你要备份的内容：
+							</p>
+
+							<p>
+								{Object.values(dataTypes).map(d => (
+									<label key={d} style={{marginRight: 5}}>
+										<input
+											checked={dataType === d}
+											value={d}
+											type="radio"
+											className="nes-radio"
+											name="data-type"
+											onChange={this.onChangeDataType}
+										/>
+										<span>{d}</span>
+									</label>
+								))}
+							</p>
+
 							{message.length > 0 ? (
 								<>
 									{message.map((m, i) => <p key={String(i)}>{m}</p>)}
 									<p><progress className="nes-progress is-pattern" value={currentPage} max={pageCount}/></p>
-									<p>实际已获取 <ReactCountup start={prevStatusCount} end={statusCount} duration={done ? 1 : 3}/> 条消息。</p>
+									<p>实际已获取 <ReactCountup start={prevStatusCount} end={statusCount} duration={done ? 1 : 3}/> 条{dataType}。</p>
 									{done && <p>获取完毕。</p>}
 									{done && this.exportTypes()}
 									<p><button disabled={!done} type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.doExport}>导出</button></p>
+
+									<button
+										type="button"
+										className="nes-btn"
+										style={{
+											position: 'absolute',
+											left: -4,
+											bottom: -4
+										}}
+										onClick={() => {
+											window.location.reload();
+										}}
+									>
+										{done ? '返回' : '停止'}
+									</button>
 								</>
 							) : (
 								<p className="nes-pointer" onClick={this.startAnalyze}>{'> 点击这里开始备份 <'}</p>
