@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "3d3e3e8e959c39e02eb5c829801e552f",
+    "revision": "9517f1c36aa988c89f4398b476cffee2",
     "url": "/fanfou-export/index.html"
   },
   {
-    "revision": "ccac74c20021090a45e4",
+    "revision": "1b2735ccdc159b4e11db",
     "url": "/fanfou-export/static/css/2.bc82e399.chunk.css"
   },
   {
-    "revision": "5d766568939766650ed9",
+    "revision": "86e5814b1fe77ca8e50d",
     "url": "/fanfou-export/static/css/main.f1a2d065.chunk.css"
   },
   {
-    "revision": "ccac74c20021090a45e4",
-    "url": "/fanfou-export/static/js/2.c8a57466.chunk.js"
+    "revision": "1b2735ccdc159b4e11db",
+    "url": "/fanfou-export/static/js/2.2bd218a4.chunk.js"
   },
   {
     "revision": "b48ecc7f9c7e4c7f36833a59eca5d9a3",
-    "url": "/fanfou-export/static/js/2.c8a57466.chunk.js.LICENSE.txt"
+    "url": "/fanfou-export/static/js/2.2bd218a4.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "5d766568939766650ed9",
-    "url": "/fanfou-export/static/js/main.714933ef.chunk.js"
+    "revision": "86e5814b1fe77ca8e50d",
+    "url": "/fanfou-export/static/js/main.d8236824.chunk.js"
   },
   {
     "revision": "faf470b4c648823d5617",
