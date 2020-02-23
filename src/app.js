@@ -10,6 +10,7 @@ import 'nes.css/css/nes.css';
 import './app.css';
 
 const fullList = [];
+let erroredPages = [];
 
 const exportTypes = {
 	TXT: 'TXT',
@@ -29,7 +30,6 @@ class App extends React.Component {
 		prevStatusCount: 0,
 		statusCount: 0,
 		done: false,
-		erroredPages: [],
 		exportType: 'TXT'
 	}
 
@@ -67,8 +67,12 @@ class App extends React.Component {
 		window.location.replace(`https://fanfou.com/oauth/authorize?oauth_token=${res.oauthToken}&oauth_callback=${window.location.href}`);
 	}
 
+	getErroredPages = () => {
+		return erroredPages;
+	}
+
 	fetchStatuses = () => {
-		const {done, erroredPages, pageCount} = this.state;
+		const {done, pageCount} = this.state;
 
 		if (done) {
 			return;
@@ -77,8 +81,8 @@ class App extends React.Component {
 		let pages = Array.from({length: pageCount}, (v, i) => i + 1);
 
 		if (erroredPages.length > 0) {
-			console.log('Errored pages:', erroredPages);
 			pages = erroredPages;
+			console.log('Retry pages', erroredPages);
 		}
 
 		async.eachLimit(pages, 6, (page, cb) => {
@@ -88,18 +92,17 @@ class App extends React.Component {
 					list.forEach(status => {
 						fullList.push(status);
 					});
+					erroredPages = this.getErroredPages().filter(p => p !== page);
 					this.setState(state => ({
 						currentPage: state.currentPage + 1,
 						prevStatusCount: prevCount,
-						statusCount: fullList.length,
-						erroredPages: state.erroredPages.filter(p => p !== page)
+						statusCount: fullList.length
 					}), cb);
 				})
 				.catch(error => {
-					console.error(error);
-					this.setState(state => ({
-						erroredPages: state.erroredPages.concat(page)
-					}), cb);
+					console.error(`Page ${page} errored`, error);
+					erroredPages.push(page);
+					cb();
 				});
 		}, error => {
 			if (error) {
@@ -108,7 +111,7 @@ class App extends React.Component {
 
 			fullList.sort((a, b) => b.rawid - a.rawid);
 
-			this.setState({done: erroredPages.length === 0}, () => {
+			this.setState({done: this.getErroredPages().length === 0}, () => {
 				this.fetchStatuses();
 			});
 		});
@@ -308,7 +311,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		const {user, loged, message, currentPage, pageCount, prevStatusCount, statusCount, done, erroredPages} = this.state;
+		const {user, loged, message, currentPage, pageCount, prevStatusCount, statusCount, done} = this.state;
 
 		return (
 			<div>
@@ -326,8 +329,8 @@ class App extends React.Component {
 									{message.map((m, i) => <p key={String(i)}>{m}</p>)}
 									<p><progress className="nes-progress is-pattern" value={currentPage} max={pageCount}/></p>
 									<p>实际已获取 <ReactCountup start={prevStatusCount} end={statusCount} duration={done ? 1 : 3}/> 条消息。</p>
-									{done && erroredPages.length === 0 ? <p>获取完毕。</p> : null}
-									{done ? this.exportTypes() : null}
+									{done && <p>获取完毕。</p>}
+									{done && this.exportTypes()}
 									<p><button disabled={!done} type="button" className={`nes-btn ${done ? 'is-success' : 'is-disabled'}`} onClick={this.doExport}>导出</button></p>
 								</>
 							) : (
