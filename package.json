@@ -70,6 +70,14 @@
           ]
         }
       ],
+      "import/extensions": [
+        "error",
+        "never",
+        {
+          "svg": "always",
+          "css": "always"
+        }
+      ],
       "unicorn/no-abusive-eslint-disable": 0,
       "eslint-comments/no-unused-disable": 0
     }
@@ -86,6 +94,6 @@
     "eslint-plugin-react": "^7.18.3",
     "eslint-plugin-react-hooks": "^2.4.0",
     "gh-pages": "^2.2.0",
-    "xo": "^0.26.1"
+    "xo": "^0.29.1"
   }
 }

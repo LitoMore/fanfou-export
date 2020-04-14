@@ -9,7 +9,7 @@ export const ff = new Fanfou({
 	apiDomain: 'cors.fanfou.pro',
 	oauthDomain: 'cors.fanfou.pro',
 	hooks: {
-		baseString: str => str
+		baseString: string => string
 			.replace('%2F%2Fcors.fanfou.pro%2Foauth', 'http%3A%2F%2Ffanfou.com%2Foauth')
 			.replace('%2F%2Fcors.fanfou.pro', 'http%3A%2F%2Fapi.fanfou.com')
 	}

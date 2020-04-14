@@ -45,9 +45,9 @@ class App extends React.Component {
 			const {oauth_token: oauthToken} = parsed;
 			const oauthTokenSecret = localStorage.getItem('requestTokenSecret');
 			if (oauthTokenSecret) {
-				const res = await ff.getAccessToken({oauthToken, oauthTokenSecret});
-				localStorage.setItem('oauthToken', res.oauthToken);
-				localStorage.setItem('oauthTokenSecret', res.oauthTokenSecret);
+				const result = await ff.getAccessToken({oauthToken, oauthTokenSecret});
+				localStorage.setItem('oauthToken', result.oauthToken);
+				localStorage.setItem('oauthTokenSecret', result.oauthTokenSecret);
 				localStorage.removeItem('requestTokenSecret');
 				window.location.replace(window.location.origin + window.location.pathname);
 			}
@@ -66,9 +66,9 @@ class App extends React.Component {
 	}
 
 	goAuth = async () => {
-		const res = await ff.getRequestToken();
-		localStorage.setItem('requestTokenSecret', res.oauthTokenSecret);
-		window.location.replace(`https://fanfou.com/oauth/authorize?oauth_token=${res.oauthToken}&oauth_callback=${window.location.href}`);
+		const result = await ff.getRequestToken();
+		localStorage.setItem('requestTokenSecret', result.oauthTokenSecret);
+		window.location.replace(`https://fanfou.com/oauth/authorize?oauth_token=${result.oauthToken}&oauth_callback=${window.location.href}`);
 	}
 
 	getErroredPages = () => {
@@ -105,14 +105,14 @@ class App extends React.Component {
 		async.eachLimit(pages, 6, (page, cb) => {
 			ff.get(timelineUri, {page, count: 60, format: 'html'})
 				.then(list => {
-					const prevCount = fullList.length;
+					const previousCount = fullList.length;
 					list.forEach(status => {
 						fullList.push(status);
 					});
 					erroredPages = this.getErroredPages().filter(p => p !== page);
 					this.setState(state => ({
 						currentPage: state.currentPage + 1,
-						prevStatusCount: prevCount,
+						prevStatusCount: previousCount,
 						statusCount: fullList.length
 					}), cb);
 				})
@@ -186,14 +186,14 @@ class App extends React.Component {
 		);
 	}
 
-	onChangeExportType = e => {
-		const {value: exportType} = e.currentTarget;
+	onChangeExportType = event => {
+		const {value: exportType} = event.currentTarget;
 		this.setState({exportType});
 	}
 
-	onChangeDataType = e => {
+	onChangeDataType = event => {
 		if (this.state.message.length === 0) {
-			const {value: dataType} = e.currentTarget;
+			const {value: dataType} = event.currentTarget;
 			this.setState({dataType});
 		}
 	}
