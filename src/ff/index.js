@@ -8,7 +8,7 @@ export const ff = new Fanfou({
 	consumerSecret,
 	apiDomain: 'api.fanfou.com',
 	oauthDomain: 'fanfou.com',
-        protocol: 'https:',
+	protocol: 'https:',
 	hooks: {
 		baseString: string => string
 			.replace('https', 'http')

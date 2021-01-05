@@ -31,11 +31,7 @@ export const toTxt = fullList => {
 
 		if (status.photo) {
 			const photoTag = `图:${status.photo.originurl}`;
-			if (text.length > 0) {
-				text += ` ${photoTag}`;
-			} else {
-				text += photoTag;
-			}
+			text += text.length > 0 ? ` ${photoTag}` : photoTag;
 		}
 
 		const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');

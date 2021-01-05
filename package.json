@@ -89,11 +89,11 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
-    "eslint-config-xo": "^0.29.1",
+    "eslint-config-xo": "^0.34.0",
     "eslint-config-xo-react": "^0.23.0",
-    "eslint-plugin-react": "^7.18.3",
-    "eslint-plugin-react-hooks": "^2.4.0",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "gh-pages": "^2.2.0",
-    "xo": "^0.29.1"
+    "xo": "^0.37.1"
   }
 }
