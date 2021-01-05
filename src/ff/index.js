@@ -6,11 +6,11 @@ export const consumerSecret = '0caea751b828756dca59a8ea7330384b';
 export const ff = new Fanfou({
 	consumerKey,
 	consumerSecret,
-	apiDomain: 'cors.fanfou.pro',
-	oauthDomain: 'cors.fanfou.pro',
+	apiDomain: 'api.fanfou.com',
+	oauthDomain: 'fanfou.com',
+        protocol: 'https:',
 	hooks: {
 		baseString: string => string
-			.replace('%2F%2Fcors.fanfou.pro%2Foauth', 'http%3A%2F%2Ffanfou.com%2Foauth')
-			.replace('%2F%2Fcors.fanfou.pro', 'http%3A%2F%2Fapi.fanfou.com')
+			.replace('https', 'http')
 	}
 });
