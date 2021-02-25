@@ -51,6 +51,7 @@
     "extends": [
       "xo-react"
     ],
+    "prettier": true,
     "plugins": "react",
     "ignores": [
       "hooks/**",
@@ -70,14 +71,7 @@
           ]
         }
       ],
-      "import/extensions": [
-        "error",
-        "never",
-        {
-          "svg": "always",
-          "css": "always"
-        }
-      ],
+      "import/extensions": 0,
       "unicorn/no-abusive-eslint-disable": 0,
       "eslint-comments/no-unused-disable": 0
     }
@@ -94,6 +88,6 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "gh-pages": "^2.2.0",
-    "xo": "^0.37.1"
+    "xo": "^0.38.1"
   }
 }

@@ -7,12 +7,12 @@ const saveFile = (text, filename) => {
 	FileSaver.saveAs(blob, filename);
 };
 
-export const toTxt = fullList => {
-	const parsedData = fullList.map(status => {
+export const toTxt = (fullList) => {
+	const parsedData = fullList.map((status) => {
 		const name = `[${status.user.screen_name}]`;
 		let text = '';
 
-		status.txt.forEach(item => {
+		for (const item of status.txt) {
 			switch (item.type) {
 				case 'at':
 					text += `${item.text}:${item.id}`;
@@ -27,14 +27,16 @@ export const toTxt = fullList => {
 					text += item._text;
 					break;
 			}
-		});
+		}
 
 		if (status.photo) {
 			const photoTag = `图:${status.photo.originurl}`;
 			text += text.length > 0 ? ` ${photoTag}` : photoTag;
 		}
 
-		const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
+		const time = moment(new Date(status.created_at))
+			.local()
+			.format('YYYY-MM-DD HH:mm:ss');
 		const line = `${name} ${text} ${time}`;
 
 		return line;
@@ -44,13 +46,15 @@ export const toTxt = fullList => {
 };
 
 export const toCsv = (fullList, type = 'CSV') => {
-	const parsedData = fullList.map(status => {
+	const parsedData = fullList.map((status) => {
 		const name = status.user.screen_name;
 		const photo = status.photo ? status.photo.originurl : '';
-		const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
+		const time = moment(new Date(status.created_at))
+			.local()
+			.format('YYYY-MM-DD HH:mm:ss');
 		let text = '';
 
-		status.txt.forEach(item => {
+		for (const item of status.txt) {
 			switch (item.type) {
 				case 'at':
 					text += `${item.text}:${item.id}`;
@@ -65,7 +69,7 @@ export const toCsv = (fullList, type = 'CSV') => {
 					text += item._text;
 					break;
 			}
-		});
+		}
 
 		const record = {ID: name, 消息内容: text, 图片: photo, 时间: time};
 
@@ -81,12 +85,12 @@ export const toCsv = (fullList, type = 'CSV') => {
 	saveFile(output, 'backup.' + type.toLowerCase());
 };
 
-export const toTsv = fullList => {
+export const toTsv = (fullList) => {
 	toCsv(fullList, 'TSV');
 };
 
-export const toJson = fullList => {
-	const parsedData = fullList.map(status => {
+export const toJson = (fullList) => {
+	const parsedData = fullList.map((status) => {
 		delete status.txt;
 		delete status.user;
 		return status;
@@ -95,13 +99,15 @@ export const toJson = fullList => {
 	saveFile(output, 'backup.json');
 };
 
-export const toMarkdown = fullList => {
-	const parsedData = fullList.map(status => {
+export const toMarkdown = (fullList) => {
+	const parsedData = fullList.map((status) => {
 		const photo = status.photo ? status.photo.originurl : '';
-		const time = moment(new Date(status.created_at)).local().format('YYYY-MM-DD HH:mm:ss');
+		const time = moment(new Date(status.created_at))
+			.local()
+			.format('YYYY-MM-DD HH:mm:ss');
 		let text = '';
 
-		status.txt.forEach(item => {
+		for (const item of status.txt) {
 			switch (item.type) {
 				case 'at':
 					text += `<a href="https://fanfou.com/${item.id}">${item.text}</a>`;
@@ -110,14 +116,25 @@ export const toMarkdown = fullList => {
 					text += `<a href="${item.text}">${item.text}</a>`;
 					break;
 				case 'tag':
-					text += `<a href="https://fanfou.com/q/${item.query}">${item._text.replace(/\n/g, ' ')}</a>`;
+					text += `<a href="https://fanfou.com/q/${
+						item.query
+					}">${item._text.replace(/\n/g, ' ')}</a>`;
 					break;
 				default:
 					text += item._text.replace(/\n/g, ' ');
 					break;
 			}
-		});
-		const block = `| <div>${text}</div>${photo ? `<div align="right"><a href="${photo}"><img width="100px" src="${photo}"/></a></div>` : ''} <div align="right">${time} 通过 ${status.source_url ? `<a href="${status.source_url}">${status.source_name}</a>` : status.source_name}</div> |`;
+		}
+
+		const block = `| <div>${text}</div>${
+			photo
+				? `<div align="right"><a href="${photo}"><img width="100px" src="${photo}"/></a></div>`
+				: ''
+		} <div align="right">${time} 通过 ${
+			status.source_url
+				? `<a href="${status.source_url}">${status.source_name}</a>`
+				: status.source_name
+		}</div> |`;
 
 		return block;
 	});
