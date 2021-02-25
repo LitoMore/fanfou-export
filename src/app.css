@@ -3,6 +3,10 @@
   src: local('Zpix'), url(./fonts/Zpix.ttf) format('truetype');
 }
 
+html, body, #root {
+  height: 100%;
+}
+
 body {
   font-family: Zpix;
 }

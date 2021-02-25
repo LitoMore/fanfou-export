@@ -2,8 +2,9 @@ import React from 'react';
 import ReactCountup from 'react-countup';
 import queryString from 'query-string';
 import async from 'async';
-import {ff} from './ff.js';
-import {toTxt, toCsv, toTsv, toJson, toMarkdown} from './utils/parser.js';
+import {ff} from './ff';
+import {toTxt, toCsv, toTsv, toJson, toMarkdown} from './utils/parser';
+import {PDFDocument, DownloadLink} from './utils/pdf-template';
 import 'nes.css/css/nes.css';
 import './app.css';
 
@@ -20,7 +21,8 @@ const exportTypes = {
 	CSV: 'CSV',
 	TSV: 'TSV',
 	JSON: 'JSON',
-	Markdown: 'Markdown'
+	Markdown: 'Markdown',
+	PDF: 'PDF'
 };
 
 class App extends React.Component {
@@ -249,8 +251,10 @@ class App extends React.Component {
 			pageCount,
 			prevStatusCount,
 			statusCount,
-			done
+			done,
+			exportType
 		} = this.state;
+		const {PDF} = exportTypes;
 
 		return (
 			<div>
@@ -320,16 +324,23 @@ class App extends React.Component {
 									{done && <p>获取完毕。</p>}
 									{done && this.exportTypes()}
 									<p>
-										<button
-											disabled={!done}
-											type="button"
-											className={`nes-btn ${
-												done ? 'is-success' : 'is-disabled'
-											}`}
-											onClick={this.doExport}
-										>
-											导出
-										</button>
+										{exportType === PDF ? (
+											<DownloadLink
+												done={done}
+												document={<PDFDocument fullList={fullList} />}
+											/>
+										) : (
+											<button
+												className={`nes-btn ${
+													done ? 'is-success' : 'is-disabled'
+												}`}
+												disabled={!done}
+												type="button"
+												onClick={this.doExport}
+											>
+												导出
+											</button>
+										)}
 									</p>
 
 									<button

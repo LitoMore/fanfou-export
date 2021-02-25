@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-pdf/renderer": "^1.6.13",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
@@ -71,7 +72,17 @@
           ]
         }
       ],
-      "import/extensions": 0,
+      "import/extensions": [
+        "error",
+        "never",
+        {
+          "svg": "always",
+          "css": "always",
+          "ttf": "always"
+        }
+      ],
+      "react/prop-types": 0,
+      "node/file-extension-in-import": 0,
       "unicorn/no-abusive-eslint-disable": 0,
       "eslint-comments/no-unused-disable": 0
     }
