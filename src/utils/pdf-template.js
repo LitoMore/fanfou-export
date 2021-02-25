@@ -23,8 +23,7 @@ const styles = StyleSheet.create({
 	},
 	status: {
 		margin: 5,
-		fontSize: 12,
-		textAlign: 'justify'
+		fontSize: 12
 	},
 	text: {
 		lineHeight: 1.5
