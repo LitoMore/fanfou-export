@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/fanfou-export/static/css/main.c31e7d38.chunk.css",
-    "main.js": "/fanfou-export/static/js/main.60da6581.chunk.js",
-    "main.js.map": "/fanfou-export/static/js/main.60da6581.chunk.js.map",
+    "main.js": "/fanfou-export/static/js/main.df9bac82.chunk.js",
+    "main.js.map": "/fanfou-export/static/js/main.df9bac82.chunk.js.map",
     "runtime-main.js": "/fanfou-export/static/js/runtime-main.eab4381e.js",
     "runtime-main.js.map": "/fanfou-export/static/js/runtime-main.eab4381e.js.map",
     "static/css/2.e71c1181.chunk.css": "/fanfou-export/static/css/2.e71c1181.chunk.css",
@@ -19,6 +19,6 @@
     "static/css/2.e71c1181.chunk.css",
     "static/js/2.6987e643.chunk.js",
     "static/css/main.c31e7d38.chunk.css",
-    "static/js/main.60da6581.chunk.js"
+    "static/js/main.df9bac82.chunk.js"
   ]
 }
