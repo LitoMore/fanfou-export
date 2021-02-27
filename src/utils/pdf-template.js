@@ -4,7 +4,6 @@ import {
 	Document,
 	Page,
 	Text,
-	Image,
 	Link,
 	StyleSheet,
 	Font
@@ -59,10 +58,10 @@ const styles = StyleSheet.create({
 	}
 });
 
-const StatusText = ({status}) =>
-	status.txt.map((item, i) => {
+const StatusText = ({status}) => {
+	return status.txt.map((item, i) => {
 		switch (item.type) {
-			case 'at':
+			case 'at': {
 				return (
 					<Link
 						key={`at-${status.id}-${String(i)}`}
@@ -72,7 +71,9 @@ const StatusText = ({status}) =>
 						{item.text}
 					</Link>
 				);
-			case 'link':
+			}
+
+			case 'link': {
 				return (
 					<Link
 						key={`link-${status.id}-${String(i)}`}
@@ -82,24 +83,30 @@ const StatusText = ({status}) =>
 						{item.text}
 					</Link>
 				);
-			case 'tag':
+			}
+
+			case 'tag': {
 				return (
 					<Link
 						key={`tag-${status.id}-${String(i)}`}
 						style={{...styles.text, ...styles.link}}
 						src={`https://fanfou.com/q/${item.query}`}
 					>
-						{item._text.replace(/\n/g, ' ')}
+						{item.text.split('')}
 					</Link>
 				);
-			default:
+			}
+
+			default: {
 				return (
 					<Text key={`text-${status.id}-${String(i)}`} style={styles.text}>
-						{item.text}
+						{item.text.split('')}
 					</Text>
 				);
+			}
 		}
 	});
+};
 
 export const PDFDocument = ({fullList}) => (
 	<Document>
@@ -111,8 +118,11 @@ export const PDFDocument = ({fullList}) => (
 						<StatusText status={status} />
 					</Text>
 					{status.photo && (
-						<Link src={status.photo.originurl}>
-							<Image style={styles.image} src={status.photo.originurl} />
+						<Link
+							style={{...styles.time, ...styles.link}}
+							src={status.photo.originurl}
+						>
+							[图]
 						</Link>
 					)}
 					<Text style={styles.time}>
