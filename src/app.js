@@ -323,6 +323,12 @@ class App extends React.Component {
 									</p>
 									{done && <p>获取完毕。</p>}
 									{done && this.exportTypes()}
+									{fullList.length > 1000 && (
+										<p>
+											消息数量超过 1000 条，PDF 类型在线导出较慢。建议选择
+											MARKDOWN 导出后自行使用其他工具转换为 PDF。
+										</p>
+									)}
 									<p>
 										{exportType === PDF ? (
 											<DownloadLink
