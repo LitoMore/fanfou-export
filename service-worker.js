@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/fanfou-export/precache-manifest.89a85d4e91ccbfe5b2710e649b6ba6f6.js"
+  "/fanfou-export/precache-manifest.31a1ffc7b24772f3f1ee7cfc303f2147.js"
 );
 
 self.addEventListener('message', (event) => {
