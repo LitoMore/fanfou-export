@@ -10,6 +10,6 @@ export const ff = new Fanfou({
 	oauthDomain: 'fanfou.com',
 	protocol: 'https:',
 	hooks: {
-		baseString: (string) => string.replace('https', 'http')
-	}
+		baseString: string => string.replace('https', 'http'),
+	},
 });

@@ -13,7 +13,7 @@ let erroredPages = [];
 
 const dataTypes = {
 	USER_TIMELINE: '消息',
-	FAVORITES: '收藏'
+	FAVORITES: '收藏',
 };
 
 const exportTypes = {
@@ -22,7 +22,7 @@ const exportTypes = {
 	TSV: 'TSV',
 	JSON: 'JSON',
 	Markdown: 'Markdown',
-	PDF: 'PDF'
+	PDF: 'PDF',
 };
 
 class App extends React.Component {
@@ -36,7 +36,7 @@ class App extends React.Component {
 		statusCount: 0,
 		done: false,
 		exportType: 'TXT',
-		dataType: '消息'
+		dataType: '消息',
 	};
 
 	async componentDidMount() {
@@ -52,7 +52,7 @@ class App extends React.Component {
 				localStorage.setItem('oauthTokenSecret', result.oauthTokenSecret);
 				localStorage.removeItem('requestTokenSecret');
 				window.location.replace(
-					window.location.origin + window.location.pathname
+					window.location.origin + window.location.pathname,
 				);
 			}
 		} else {
@@ -73,13 +73,11 @@ class App extends React.Component {
 		const result = await ff.getRequestToken();
 		localStorage.setItem('requestTokenSecret', result.oauthTokenSecret);
 		window.location.replace(
-			`https://fanfou.com/oauth/authorize?oauth_token=${result.oauthToken}&oauth_callback=${window.location.href}`
+			`https://fanfou.com/oauth/authorize?oauth_token=${result.oauthToken}&oauth_callback=${window.location.href}`,
 		);
 	};
 
-	getErroredPages = () => {
-		return erroredPages;
-	};
+	getErroredPages = () => erroredPages;
 
 	fetchStatuses = () => {
 		const {done, pageCount, dataType} = this.state;
@@ -113,29 +111,29 @@ class App extends React.Component {
 			6,
 			(page, cb) => {
 				ff.get(timelineUri, {page, count: 60, format: 'html'})
-					.then((list) => {
+					.then(list => {
 						const previousCount = fullList.length;
 						for (const status of list) {
 							fullList.push(status);
 						}
 
-						erroredPages = this.getErroredPages().filter((p) => p !== page);
+						erroredPages = this.getErroredPages().filter(p => p !== page);
 						this.setState(
-							(state) => ({
+							state => ({
 								currentPage: state.currentPage + 1,
 								prevStatusCount: previousCount,
-								statusCount: fullList.length
+								statusCount: fullList.length,
 							}),
-							cb
+							cb,
 						);
 					})
-					.catch((error) => {
+					.catch(error => {
 						console.error(`Page ${page} errored`, error);
 						erroredPages.push(page);
 						cb();
 					});
 			},
-			(error) => {
+			error => {
 				if (error) {
 					console.error(error);
 				}
@@ -145,7 +143,7 @@ class App extends React.Component {
 				this.setState({done: this.getErroredPages().length === 0}, () => {
 					this.fetchStatuses();
 				});
-			}
+			},
 		);
 	};
 
@@ -168,14 +166,14 @@ class App extends React.Component {
 		const pageCount = Math.ceil(statusesCount / 60);
 
 		this.setState(
-			(state) => ({
+			state => ({
 				message: state.message.concat([
 					`你有 ${pageCount} 页预计 ${statusesCount} 条${dataType}待导出，`,
-					`开始获取${dataType}..`
+					`开始获取${dataType}..`,
 				]),
-				pageCount
+				pageCount,
 			}),
-			this.fetchStatuses
+			this.fetchStatuses,
 		);
 	};
 
@@ -186,7 +184,7 @@ class App extends React.Component {
 			<>
 				<p>选择导出格式：</p>
 				<p>
-					{Object.values(exportTypes).map((type) => (
+					{Object.values(exportTypes).map(type => (
 						<label key={type} style={{marginRight: 5}}>
 							<input
 								checked={exportType === type}
@@ -204,12 +202,12 @@ class App extends React.Component {
 		);
 	};
 
-	onChangeExportType = (event) => {
+	onChangeExportType = event => {
 		const {value: exportType} = event.currentTarget;
 		this.setState({exportType});
 	};
 
-	onChangeDataType = (event) => {
+	onChangeDataType = event => {
 		if (this.state.message.length === 0) {
 			const {value: dataType} = event.currentTarget;
 			this.setState({dataType});
@@ -252,7 +250,7 @@ class App extends React.Component {
 			prevStatusCount,
 			statusCount,
 			done,
-			exportType
+			exportType,
 		} = this.state;
 		const {PDF} = exportTypes;
 
@@ -272,8 +270,7 @@ class App extends React.Component {
 					{user ? (
 						<>
 							<p>
-								你好，
-								<img
+								你好，<img
 									className="nes-avatar is-small"
 									alt="avatar"
 									src={user.profile_image_url}
@@ -285,7 +282,7 @@ class App extends React.Component {
 							<p>选择你要备份的内容：</p>
 
 							<p>
-								{Object.values(dataTypes).map((d) => (
+								{Object.values(dataTypes).map(d => (
 									<label key={d} style={{marginRight: 5}}>
 										<input
 											checked={dataType === d}
@@ -333,7 +330,7 @@ class App extends React.Component {
 										{exportType === PDF ? (
 											<DownloadLink
 												done={done}
-												document={<PDFDocument fullList={fullList} />}
+												document={<PDFDocument fullList={fullList}/>}
 											/>
 										) : (
 											<button
@@ -355,7 +352,7 @@ class App extends React.Component {
 										style={{
 											position: 'absolute',
 											left: -4,
-											bottom: -4
+											bottom: -4,
 										}}
 										onClick={() => {
 											window.location.reload();
@@ -376,7 +373,7 @@ class App extends React.Component {
 								style={{
 									position: 'absolute',
 									right: -4,
-									bottom: 0
+									bottom: 0,
 								}}
 								onClick={() => {
 									localStorage.removeItem('oauthToken');
@@ -387,7 +384,7 @@ class App extends React.Component {
 								退出
 							</button>
 						</>
-					) : loged ? (
+					) : (loged ? (
 						<p>正在登录..</p>
 					) : (
 						<p>
@@ -399,7 +396,7 @@ class App extends React.Component {
 								登录
 							</button>
 						</p>
-					)}
+					))}
 				</div>
 				<p style={{textAlign: 'center'}}>
 					<span style={{fontWeight: 700}}>{'<'}</span>

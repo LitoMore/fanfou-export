@@ -6,7 +6,7 @@ import {
 	Text,
 	Link,
 	StyleSheet,
-	Font
+	Font,
 } from '@react-pdf/renderer';
 import moment from 'moment';
 import Zpix from '../fonts/Zpix.ttf';
@@ -18,34 +18,34 @@ const styles = StyleSheet.create({
 		paddingTop: 35,
 		paddingBottom: 65,
 		paddingHorizontal: 35,
-		fontFamily: 'Zpix'
+		fontFamily: 'Zpix',
 	},
 	status: {
 		margin: 5,
-		fontSize: 12
+		fontSize: 12,
 	},
 	text: {
-		lineHeight: 1.5
+		lineHeight: 1.5,
 	},
 	time: {
 		fontSize: 12,
 		lineHeight: 1.5,
-		textAlign: 'right'
+		textAlign: 'right',
 	},
 	link: {
-		color: '#00ccff'
+		color: '#00ccff',
 	},
 	image: {
 		width: 100,
 		marginLeft: 'auto',
 		marginRight: 0,
-		marginBottom: 10
+		marginBottom: 10,
 	},
 	header: {
 		fontSize: 12,
 		marginBottom: 20,
 		textAlign: 'center',
-		color: 'grey'
+		color: 'grey',
 	},
 	pageNumber: {
 		position: 'absolute',
@@ -54,59 +54,57 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		textAlign: 'center',
-		color: 'grey'
-	}
+		color: 'grey',
+	},
 });
 
-const StatusText = ({status}) => {
-	return status.txt.map((item, i) => {
-		switch (item.type) {
-			case 'at': {
-				return (
-					<Link
-						key={`at-${status.id}-${String(i)}`}
-						style={{...styles.text, ...styles.link}}
-						src={`https://fanfou.com/${item.id}`}
-					>
-						{item.text}
-					</Link>
-				);
-			}
-
-			case 'link': {
-				return (
-					<Link
-						key={`link-${status.id}-${String(i)}`}
-						style={{...styles.text, ...styles.link}}
-						src={item.text}
-					>
-						{item.text}
-					</Link>
-				);
-			}
-
-			case 'tag': {
-				return (
-					<Link
-						key={`tag-${status.id}-${String(i)}`}
-						style={{...styles.text, ...styles.link}}
-						src={`https://fanfou.com/q/${item.query}`}
-					>
-						{item.text.split('')}
-					</Link>
-				);
-			}
-
-			default: {
-				return (
-					<Text key={`text-${status.id}-${String(i)}`} style={styles.text}>
-						{item.text.split('')}
-					</Text>
-				);
-			}
+const StatusText = ({status}) => status.txt.map((item, i) => {
+	switch (item.type) {
+		case 'at': {
+			return (
+				<Link
+					key={`at-${status.id}-${String(i)}`}
+					style={{...styles.text, ...styles.link}}
+					src={`https://fanfou.com/${item.id}`}
+				>
+					{item.text}
+				</Link>
+			);
 		}
-	});
-};
+
+		case 'link': {
+			return (
+				<Link
+					key={`link-${status.id}-${String(i)}`}
+					style={{...styles.text, ...styles.link}}
+					src={item.text}
+				>
+					{item.text}
+				</Link>
+			);
+		}
+
+		case 'tag': {
+			return (
+				<Link
+					key={`tag-${status.id}-${String(i)}`}
+					style={{...styles.text, ...styles.link}}
+					src={`https://fanfou.com/q/${item.query}`}
+				>
+					{item.text.split('')}
+				</Link>
+			);
+		}
+
+		default: {
+			return (
+				<Text key={`text-${status.id}-${String(i)}`} style={styles.text}>
+					{item.text.split('')}
+				</Text>
+			);
+		}
+	}
+});
 
 export const PDFDocument = ({fullList}) => (
 	<Document>
@@ -115,7 +113,7 @@ export const PDFDocument = ({fullList}) => (
 			{fullList.map((status, i) => (
 				<React.Fragment key={`status-${status.id}-${String(i)}`}>
 					<Text style={styles.status}>
-						<StatusText status={status} />
+						<StatusText status={status}/>
 					</Text>
 					{status.photo && (
 						<Link
@@ -157,7 +155,6 @@ export const DownloadLink = ({document, done}) => (
 				<button disabled className="nes-btn is-disabled" type="button">
 					正在生成 PDF
 				</button>
-			)
-		}
+			)}
 	</PDFDownloadLink>
 );

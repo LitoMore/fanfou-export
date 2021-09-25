@@ -7,8 +7,8 @@ const saveFile = (text, filename) => {
 	FileSaver.saveAs(blob, filename);
 };
 
-export const toTxt = (fullList) => {
-	const parsedData = fullList.map((status) => {
+export const toTxt = fullList => {
+	const parsedData = fullList.map(status => {
 		const name = `[${status.user.screen_name}]`;
 		let text = '';
 
@@ -46,7 +46,7 @@ export const toTxt = (fullList) => {
 };
 
 export const toCsv = (fullList, type = 'CSV') => {
-	const parsedData = fullList.map((status) => {
+	const parsedData = fullList.map(status => {
 		const name = status.user.screen_name;
 		const photo = status.photo ? status.photo.originurl : '';
 		const time = moment(new Date(status.created_at))
@@ -85,12 +85,12 @@ export const toCsv = (fullList, type = 'CSV') => {
 	saveFile(output, 'backup.' + type.toLowerCase());
 };
 
-export const toTsv = (fullList) => {
+export const toTsv = fullList => {
 	toCsv(fullList, 'TSV');
 };
 
-export const toJson = (fullList) => {
-	const parsedData = fullList.map((status) => {
+export const toJson = fullList => {
+	const parsedData = fullList.map(status => {
 		delete status.txt;
 		delete status.user;
 		return status;
@@ -99,8 +99,8 @@ export const toJson = (fullList) => {
 	saveFile(output, 'backup.json');
 };
 
-export const toMarkdown = (fullList) => {
-	const parsedData = fullList.map((status) => {
+export const toMarkdown = fullList => {
+	const parsedData = fullList.map(status => {
 		const photo = status.photo ? status.photo.originurl : '';
 		const time = moment(new Date(status.created_at))
 			.local()
