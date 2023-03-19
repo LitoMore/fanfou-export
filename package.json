@@ -15,9 +15,9 @@
     "nes.css": "^2.3.0",
     "papaparse": "^5.1.1",
     "query-string": "^6.11.0",
-    "react": "^18.0.0-rc.0",
+    "react": "^18.2.0",
     "react-countup": "^4.3.3",
-    "react-dom": "^18.0.0-rc.0",
+    "react-dom": "^18.2.0",
     "react-scripts": "^4.0.3"
   },
   "scripts": {
