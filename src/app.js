@@ -301,7 +301,7 @@ class App extends React.Component {
 							{message.length > 0 ? (
 								<>
 									{message.map((m, i) => (
-										<p key={String(i)}>{m}</p>
+										<p key={`msg-${String(i)}`}>{m}</p>
 									))}
 									<p>
 										<progress
