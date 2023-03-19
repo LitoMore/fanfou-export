@@ -5,6 +5,7 @@ import async from 'async';
 import {ff} from './ff';
 import {toTxt, toCsv, toTsv, toJson, toMarkdown} from './utils/parser';
 import {PDFDocument, DownloadLink} from './utils/pdf-template';
+import PlaystaMore from './utils/playsta';
 import 'nes.css/css/nes.css';
 import './app.css';
 
@@ -402,16 +403,17 @@ class App extends React.Component {
 					<span style={{fontWeight: 700}}>{'<'}</span>
 					<span style={{fontWeight: 700, marginLeft: 2}}>{'>'}</span>
 					{' with '}
-					<a
-						href="https://fanfou.com/lito"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<i
-							className="nes-icon is-small heart nes-pointer"
-							style={{marginTop: -4, marginBottom: -4}}
-						/>
-					</a>
+					<PlaystaMore
+						id={user?.id}
+						uniqueId={user?.unique_id}
+						heartColor={user?.profile_link_color || '#ff4321'}
+						fallback={
+							<i
+								className="nes-icon is-small heart nes-pointer"
+								style={{marginTop: -4, marginBottom: -4}}
+							/>
+						}
+					/>
 					{' on '}
 					<a
 						href="https://github.com/LitoMore/fanfou-export"
