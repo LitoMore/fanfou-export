@@ -1,102 +1,46 @@
 {
-  "name": "fanfou-export",
-  "homepage": "https://export.fanfou.pro",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@react-pdf/renderer": "^1.6.13",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.4.0",
-    "@testing-library/user-event": "^7.2.1",
-    "async": "^3.1.1",
-    "fanfou-sdk-browser": "^0.6.0",
-    "file-saver": "^2.0.2",
-    "moment": "^2.24.0",
-    "nes.css": "^2.3.0",
-    "papaparse": "^5.1.1",
-    "query-string": "^6.11.0",
-    "react": "^18.2.0",
-    "react-countup": "^4.3.3",
-    "react-dom": "^18.2.0",
-    "react-scripts": "^4.0.3"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "xo",
-    "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "xo": {
-    "parser": "babel-eslint",
-    "envs": [
-      "node",
-      "browser"
-    ],
-    "extends": [
-      "xo-react"
-    ],
-    "plugins": "react",
-    "ignores": [
-      "hooks/**",
-      "platforms/**",
-      "plugins/**",
-      "res/**",
-      "www/**"
-    ],
-    "rules": {
-      "import/no-unassigned-import": [
-        2,
-        {
-          "allow": [
-            "**/style/*.css",
-            "**/*.css",
-            "typeface-**"
-          ]
-        }
-      ],
-      "import/extensions": [
-        "error",
-        "never",
-        {
-          "svg": "always",
-          "css": "always",
-          "ttf": "always"
-        }
-      ],
-      "react/prop-types": 0,
-      "node/file-extension-in-import": 0,
-      "unicorn/no-abusive-eslint-disable": 0,
-      "eslint-comments/no-unused-disable": 0
-    }
-  },
-  "settings": {
-    "react": {
-      "version": "18"
-    }
-  },
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint-config-xo": "^0.38.0",
-    "eslint-config-xo-react": "^0.25.0",
-    "eslint-plugin-react": "^7.26.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "gh-pages": "^3.2.3",
-    "xo": "^0.44.0"
-  }
+	"name": "fanfou-export",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"engines": {
+		"node": "^22.13.0 || >=24"
+	},
+	"scripts": {
+		"dev": "vite",
+		"start": "vite",
+		"build": "npm run typecheck && vite build",
+		"preview": "vite preview",
+		"lint": "xo",
+		"deploy": "npm run build && gh-pages -d dist",
+		"test": "node --experimental-strip-types --test test/*.test.ts",
+		"typecheck": "tsc --noEmit",
+		"lint:fix": "xo --fix"
+	},
+	"dependencies": {
+		"@react-pdf/renderer": "^4.9.0",
+		"fanfou-sdk": "7.0.0-beta.3",
+		"file-saver": "^2.0.5",
+		"moment": "^2.31.0",
+		"nes.css": "^2.3.0",
+		"papaparse": "^5.7.0",
+		"react": "^19.3.0",
+		"react-countup": "^6.5.3",
+		"react-dom": "^19.3.0"
+	},
+	"devDependencies": {
+		"@types/file-saver": "^2.0.7",
+		"@types/node": "^24.19.0",
+		"@types/papaparse": "^5.5.2",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"@vitejs/plugin-react": "^6.1.1",
+		"eslint-config-xo-react": "^0.32.0",
+		"eslint-plugin-react-refresh": "^0.5.7",
+		"gh-pages": "^6.3.0",
+		"globals": "^17.12.0",
+		"typescript": "^6.0.3",
+		"vite": "^8.3.1",
+		"xo": "^5.0.1"
+	}
 }
